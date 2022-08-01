@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+group = 'pl.kamilkime'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+
+    maven { url = 'https://oss.sonatype.org/content/groups/public/' }
+    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url = 'https://repo.dmulloy2.net/repository/public/' }
+}
+
+dependencies {
+    compileOnly 'net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT'
+    compileOnly 'net.md-5:bungeecord-proxy:1.19-R0.1-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
+    compileOnly 'com.comphenix.protocol:ProtocolLib:4.5.0'
+    implementation 'com.zaxxer:HikariCP:4.0.3'
+    implementation 'net.bytebuddy:byte-buddy-agent:1.12.12'
+    implementation 'net.bytebuddy:byte-buddy:1.12.12'
+}
+
+def targetJavaVersion = 8
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release = targetJavaVersion
+    }
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    expand props
+    filteringCharset 'UTF-8'
+    filesMatching(['bungee.yml', 'plugin.yml']) {
+        expand props
+    }
+}
+
+shadowJar {
+    relocate('com.zaxxer.hikari', 'pl.kamilkime.voxelbungee.libs.hikaricp')
+    relocate('org.slf4j', 'pl.kamilkime.voxelbungee.libs.slf4j')
+    relocate('net.bytebuddy', 'pl.kamilkime.voxelbungee.libs.bytebuddy')
+
+    archiveFileName = "${rootProject.name} v${rootProject.version}.jar"
+}

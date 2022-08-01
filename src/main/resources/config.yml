@@ -1,0 +1,10 @@
+# Domyślny adres hosta, wysyłany do docelowego serwera w razie braku dopasowania do listy poniżej
+# Najlepiej ustawić tu adres, jakiego używają gracze, łącząc się do bungee
+defaultHost: "bungee.voxl.pl"
+
+# Lista skojarzeń serwerów z ich adresami
+# Powinny być tu podane wszystkie serwery, jakie są ustawione w configu bungee
+# Dla każdego serwera najlepiej przypisać adres, który jest przypisany w configu bungee
+hosts:
+  lobby: "lobby.voxl.pl"
+  smp: "smp.voxl.pl"

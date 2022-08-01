@@ -1,0 +1,4 @@
+name: VoxelBungee
+version: '${version}'
+main: pl.voxelhost.voxelbungee.VoxelBungee
+author: Kamilkime
